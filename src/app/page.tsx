@@ -131,7 +131,7 @@ export default function Home() {
           </p>
         </a>
         <input id="single-factor-code-text-field" autoComplete="one-time-code" />
-        <button id="single-factor-code-button" >Trigger OTP</button>
+        <button id="single-factor-code-button" onClick={triggerOtp}>Trigger OTP</button>
       </div>
     </main>
   )

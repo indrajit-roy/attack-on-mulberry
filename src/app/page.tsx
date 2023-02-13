@@ -11,27 +11,27 @@ export default function Home() {
   useEffect(() => {
     console.log("Use effect triggered");
     if ('OTPCredential' in window) {
+      console.log("OTPCredential not in window");
+      
       window.addEventListener('DOMContentLoaded', e => {
         const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+        console.log(`input -> ${input}`);
         if (!input) return;
+        console.log("AbortController triggered");
         const ac = new AbortController();
-        const form = input.closest('form');
-        if (form) {
-          form.addEventListener('submit', e => {
-            ac.abort();
-          });
-        }
+        console.log("OTP called");
         navigator.credentials.get({
           otp: { transport: ['sms'] },
           signal: ac.signal
         }).then(otp => {
           console.log(otp);
           input.value = otp?.code;
-          if (form) form.submit();
         }).catch(err => {
           console.log(err);
         });
       });
+    } else {
+      console.log("OTPCredential not in window");
     }
   })
 

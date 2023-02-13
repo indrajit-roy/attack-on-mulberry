@@ -9,6 +9,24 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
 
   useEffect(() => {
+    function myOtpCode() {
+      console.log("DOM loaded");
+      const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+      console.log(`input -> ${input}`);
+      if (!input) return;
+      console.log("AbortController initialized");
+      const ac = new AbortController();
+      console.log("OTP called");
+      navigator.credentials.get({
+        otp: { transport: ['sms'] },
+        signal: ac.signal
+      }).then(otp => {
+        console.log(otp);
+        input.value = otp?.code;
+      }).catch(err => {
+        console.log(err);
+      });
+    }
     console.log(`Use effect triggered ${'OTPCredential' in window}`);
     if ('OTPCredential' in window) {
       console.log("OTPCredential in window");
@@ -16,14 +34,11 @@ export default function Home() {
       if (document.readyState !== 'loading') {
         myOtpCode();
       } else {
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('DOMContentLoaded', function () {
           console.log('document was not ready, place code here');
           myOtpCode();
         });
       }
-      window.addEventListener('DOMContentLoaded', e => {
-
-      });
     } else {
       console.log("OTPCredential not in window");
     }
@@ -114,22 +129,5 @@ export default function Home() {
     </main>
   )
 }
-function myOtpCode() {
-  console.log("DOM loaded");
-  const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
-  console.log(`input -> ${input}`);
-  if (!input) return;
-  console.log("AbortController triggered");
-  const ac = new AbortController();
-  console.log("OTP called");
-  navigator.credentials.get({
-    otp: { transport: ['sms'] },
-    signal: ac.signal
-  }).then(otp => {
-    console.log(otp);
-    input.value = otp?.code;
-  }).catch(err => {
-    console.log(err);
-  });
-}
+
 

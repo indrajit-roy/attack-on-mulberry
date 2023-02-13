@@ -2,11 +2,12 @@
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from './page.module.css'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [didAskForOTP, setDidAskOtp] = useState(false)
 
   useEffect(() => {
     function myOtpCode() {
@@ -17,15 +18,19 @@ export default function Home() {
       console.log("AbortController initialized");
       const ac = new AbortController();
       console.log("OTP called");
+      if(didAskForOTP) return;
       navigator.credentials.get({
         otp: { transport: ['sms'] },
         signal: ac.signal
       }).then(otp => {
-        console.log(otp);
+        console.log(`Otp is : ${otp}`);
         input.value = otp?.code;
+        setDidAskOtp(false)
       }).catch(err => {
-        console.log(err);
+        console.log(`OTP error: ${err}`);
+        setDidAskOtp(false)
       });
+      setDidAskOtp(true)
     }
     console.log(`Use effect triggered ${'OTPCredential' in window}`);
     if ('OTPCredential' in window) {

@@ -1,10 +1,40 @@
+"use client"
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from './page.module.css'
+import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+
+  useEffect(() => {
+    console.log("Use effect triggered");
+    if ('OTPCredential' in window) {
+      window.addEventListener('DOMContentLoaded', e => {
+        const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+        if (!input) return;
+        const ac = new AbortController();
+        const form = input.closest('form');
+        if (form) {
+          form.addEventListener('submit', e => {
+            ac.abort();
+          });
+        }
+        navigator.credentials.get({
+          otp: { transport: ['sms'] },
+          signal: ac.signal
+        }).then(otp => {
+          console.log(otp);
+          input.value = otp?.code;
+          if (form) form.submit();
+        }).catch(err => {
+          console.log(err);
+        });
+      });
+    }
+  })
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -85,7 +115,7 @@ export default function Home() {
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
         </a>
-        <input id="single-factor-code-text-field" autoComplete="one-time-code"/>
+        <input id="single-factor-code-text-field" autoComplete="one-time-code" />
       </div>
     </main>
   )

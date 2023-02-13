@@ -11,9 +11,9 @@ export default function Home() {
   useEffect(() => {
     console.log(`Use effect triggered ${'OTPCredential' in window}`);
     if ('OTPCredential' in window) {
-      console.log("OTPCredential not in window");
-      
+      console.log("OTPCredential in window");
       window.addEventListener('DOMContentLoaded', e => {
+        console.log("DOM loaded");
         const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
         console.log(`input -> ${input}`);
         if (!input) return;

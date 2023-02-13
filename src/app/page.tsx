@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
 
   useEffect(() => {
-    console.log("Use effect triggered");
+    console.log(`Use effect triggered ${'OTPCredential' in window}`);
     if ('OTPCredential' in window) {
       console.log("OTPCredential not in window");
       

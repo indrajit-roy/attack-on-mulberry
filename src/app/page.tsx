@@ -8,30 +8,31 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [didAskForOTP, setDidAskOtp] = useState(false)
+  function myOtpCode() {
+    console.log("DOM loaded");
+    const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+    console.log(`input -> ${input}`);
+    if (!input) return;
+    console.log("AbortController initialized");
+    const ac = new AbortController();
+    console.log("OTP called");
+    if(didAskForOTP) return;
+    navigator.credentials.get({
+      otp: { transport: ['sms'] },
+      signal: ac.signal
+    }).then(otp => {
+      console.log(`Otp is : ${otp}`);
+      input.value = otp?.code;
+      setDidAskOtp(false)
+    }).catch(err => {
+      console.log(`OTP error: ${err}`);
+      setDidAskOtp(false)
+    });
+    setDidAskOtp(true)
+  }
 
-  useEffect(() => {
-    function myOtpCode() {
-      console.log("DOM loaded");
-      const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
-      console.log(`input -> ${input}`);
-      if (!input) return;
-      console.log("AbortController initialized");
-      const ac = new AbortController();
-      console.log("OTP called");
-      if(didAskForOTP) return;
-      navigator.credentials.get({
-        otp: { transport: ['sms'] },
-        signal: ac.signal
-      }).then(otp => {
-        console.log(`Otp is : ${otp}`);
-        input.value = otp?.code;
-        setDidAskOtp(false)
-      }).catch(err => {
-        console.log(`OTP error: ${err}`);
-        setDidAskOtp(false)
-      });
-      setDidAskOtp(true)
-    }
+  function triggerOtp() {
+    
     console.log(`Use effect triggered ${'OTPCredential' in window}`);
     if ('OTPCredential' in window) {
       console.log("OTPCredential in window");
@@ -47,7 +48,7 @@ export default function Home() {
     } else {
       console.log("OTPCredential not in window");
     }
-  })
+  }
 
   return (
     <main className={styles.main}>
@@ -130,6 +131,7 @@ export default function Home() {
           </p>
         </a>
         <input id="single-factor-code-text-field" autoComplete="one-time-code" />
+        <button id="single-factor-code-button" >Trigger OTP</button>
       </div>
     </main>
   )

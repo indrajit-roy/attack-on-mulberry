@@ -3,10 +3,14 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from './page.module.css'
 import { useEffect, useState } from 'react'
+import { log } from 'console'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  window.onAndroidEvent = (event) => {
+    console.log(`This is Android Event on web: ${event}`)
+  }
   const [didAskForOTP, setDidAskOtp] = useState(false)
   function myOtpCode() {
     console.log("DOM loaded");

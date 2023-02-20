@@ -9,7 +9,13 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   window.onAndroidEvent = (event) => {
-    console.log(`This is Android Event on web: ${event}`)
+    if(event instanceof Object) {
+      
+      console.log(`This is Android Event on web stringified: ${JSON.stringify(event)}`)
+    } else {
+      console.log(`This is Android Event on web: ${event}`)
+
+    }
   }
   const [didAskForOTP, setDidAskOtp] = useState(false)
   function myOtpCode() {

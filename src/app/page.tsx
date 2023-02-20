@@ -37,21 +37,7 @@ export default function Home() {
 
   function triggerOtp() {
     
-    console.log(`Use effect triggered ${'OTPCredential' in window}`);
-    if ('OTPCredential' in window) {
-      console.log("OTPCredential in window");
-
-      if (document.readyState !== 'loading') {
-        myOtpCode();
-      } else {
-        window.addEventListener('DOMContentLoaded', function () {
-          console.log('document was not ready, place code here');
-          myOtpCode();
-        });
-      }
-    } else {
-      console.log("OTPCredential not in window");
-    }
+    window.AndroidBridge.testAndroidBridge("Hi from web")
   }
 
   return (

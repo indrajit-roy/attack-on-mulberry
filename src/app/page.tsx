@@ -3,16 +3,18 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from './page.module.css'
 import { useEffect, useState } from 'react'
-import { log } from 'console'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   window.onNativeDispatch = (event) => {
+    console.log(`onNativeDispatch: event -> ${event}`)
     if(event instanceof Object) {
+      console.log(`action: ${event.action}`)
       if(event.action === "OTP_RESPONSE") {
         const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
-        log(`type of otp: ${typeof event.payload.otp}`)
+        console.log(`type of otp: ${typeof event.payload.otp}`)
+        console.log(`otp: ${event.payload.otp}`)
         if(event.payload.otp instanceof Number) {
           input.value = event.payload.otp.toString()
         }

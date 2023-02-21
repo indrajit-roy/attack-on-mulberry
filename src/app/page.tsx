@@ -8,9 +8,15 @@ import { log } from 'console'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  window.onAndroidEvent = (event) => {
+  window.onNativeDispatch = (event) => {
     if(event instanceof Object) {
-      
+      if(event.action === "OTP_RESPONSE") {
+        const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+        log(`type of otp: ${typeof event.payload.otp}`)
+        if(event.payload.otp instanceof Number) {
+          input.value = event.payload.otp.toString()
+        }
+      }
       console.log(`This is Android Event on web stringified: ${JSON.stringify(event)}`)
     } else {
       console.log(`This is Android Event on web: ${event}`)
@@ -42,8 +48,10 @@ export default function Home() {
   }
 
   function triggerOtp() {
-    
-    window.AndroidBridge.testAndroidBridge("Hi from web")
+    const otpRequest = {
+      action: "OTP_REQUEST"
+    }
+    window.AndroidBridge.dispatch(JSON.stringify(otpRequest))
   }
 
   return (

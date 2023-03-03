@@ -7,24 +7,26 @@ import { useEffect, useState } from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  window.onNativeDispatch = (event) => {
-    console.log(`onNativeDispatch: event -> ${event}`)
-    if(event instanceof Object) {
-      console.log(`action: ${event.action}`)
-      if(event.action === "OTP_RESPONSE") {
-        const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
-        console.log(`type of otp: ${typeof event.payload.otp}`)
-        console.log(`otp: ${event.payload.otp}`)
-        if(event.payload.otp instanceof Number) {
-          input.value = event.payload.otp.toString()
+  useEffect(() => {
+    window.onNativeDispatch = (event) => {
+      console.log(`onNativeDispatch: event -> ${event}`)
+      if(event instanceof Object) {
+        console.log(`action: ${event.action}`)
+        if(event.action === "OTP_RESPONSE") {
+          const input = document.getElementById("single-factor-code-text-field") as HTMLInputElement
+          console.log(`type of otp: ${typeof event.payload.otp}`)
+          console.log(`otp: ${event.payload.otp}`)
+          if(event.payload.otp instanceof Number) {
+            input.value = event.payload.otp.toString()
+          }
         }
+        console.log(`This is Android Event on web stringified: ${JSON.stringify(event)}`)
+      } else {
+        console.log(`This is Android Event on web: ${event}`)
       }
-      console.log(`This is Android Event on web stringified: ${JSON.stringify(event)}`)
-    } else {
-      console.log(`This is Android Event on web: ${event}`)
-
     }
-  }
+  }, [])
+  
   const [didAskForOTP, setDidAskOtp] = useState(false)
   function myOtpCode() {
     console.log("DOM loaded");
@@ -51,7 +53,10 @@ export default function Home() {
 
   function triggerOtp() {
     const otpRequest = {
-      action: "OTP_REQUEST"
+      action: "OTP_REQUEST",
+      payload: {
+        regex: "\\b\\d{6}\\b"
+      }
     }
     window.AndroidBridge.dispatch(JSON.stringify(otpRequest))
   }
